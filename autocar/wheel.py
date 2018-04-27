@@ -95,22 +95,23 @@ def stop():
 
 #行走子系统准备就绪，等待指令
 def standby(dd):
+    fire()
     while True:
         print(dd)
         try:
-            if dd['CMD_WHEEL'] == 100:
+            if dd['CMD_WHEEL'] == 'forward':
                 forward()
-            elif dd['CMD_WHEEL'] == 200:
+            elif dd['CMD_WHEEL'] == 'backaway':
                 backaway()
-            elif dd['CMD_WHEEL'] == 300:
+            elif dd['CMD_WHEEL'] == 'turn_left':
                 turn_left()
-            elif dd['CMD_WHEEL'] == 400:
+            elif dd['CMD_WHEEL'] == 'turn_right':
                 turn_right()
-            elif dd['CMD_WHEEL'] == 99:
+            elif dd['CMD_WHEEL'] == 'stop':
                 stop()
-            elif dd['CMD_WHEEL'] == 0:
+            elif dd['CMD_WHEEL'] == 'misfire':
                 misfire()
-            elif dd['CMD_WHEEL'] == 1:
+            elif dd['CMD_WHEEL'] == 'fire':
                 fire()  #发动
             time.sleep(0.01)
         except Exception as e:

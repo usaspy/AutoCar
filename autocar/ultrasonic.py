@@ -69,10 +69,12 @@ def __distance(direction):
 def standby(dd):
     while True:
         try:
-            if dd['x'] != None:
-                print(dd['x'])
-            else:
-                print("nothing")
-            time.sleep(0.01)
+            d = __distance(direction0)
+            if d <= stop_dist:
+                dd['CMD_WHEEL'] = 'stop'
+                for dir in [direction1,direction2,direction3,direction4]:
+                    pass
         except Exception as e:
             continue
+        finally:
+            time.sleep(0.001)

@@ -18,8 +18,7 @@ def webconsole(dd):
         @app.route('/wheel', methods=['GET'])
         def wheel_action():
                 action = request.values.get("action")
-                dd['USER_COMMAND'] = action
+                dd['CMD_WHEEL'] = action
                 return jsonify({'result': "success"})
 
         app.run(host="192.168.0.9", port=80, debug=False)
-import autocar.webconsole
