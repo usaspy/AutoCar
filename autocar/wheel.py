@@ -113,6 +113,6 @@ def standby(dd):
                 misfire()
             elif dd['CMD_WHEEL'] == 'fire':
                 fire()  #发动
-            time.sleep(0.01)
+            time.sleep(0.2)
         except Exception as e:
             continue

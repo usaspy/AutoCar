@@ -9,6 +9,7 @@
 #4.如果都有障碍，表示无法绕过，则控制车辆倒退1秒，继续执行步骤2
 import RPi.GPIO as GPIO
 import time
+from random import choice
 
 STATUS = "OK" #一切正常
 
@@ -16,11 +17,11 @@ GPIO.setmode(GPIO.BOARD)
 #SG90马达
 sg90_pin = 8
 
-direction1=4.5
-direction2=6
-direction3=9
-direction4=10.5
-direction0=7.5 #正前方
+direction1=2.5
+direction2=4
+direction3=8
+direction4=9.5
+direction0=6 #正前方
 
 #超声波
 echo_pin = 13
@@ -63,7 +64,7 @@ def __distance(direction):
     distance = 340 * (endtime - starttime) / 2
     print("direction:",direction,"   distance:", distance)
 
-    return distance
+    return direction,distance
 
 #超声波子系统准备就绪，等待指令
 def standby(dd):
@@ -72,8 +73,25 @@ def standby(dd):
             d = __distance(direction0)
             if d <= stop_dist:
                 dd['CMD_WHEEL'] = 'stop'
-                for dir in [direction1,direction2,direction3,direction4]:
-                    pass
+                dirs = []
+                for direct in [direction1,direction2,direction3,direction4]:
+                    direction,distance = __distance(direct)
+                    if distance > alert_dist:
+                        dirs.append(direct)
+                if dirs.__len__() == 0:
+                    dd['CMD_WHEEL'] = 'backaway'
+                    time.sleep(1)
+                    dd['CMD_WHEEL'] = 'stop'
+                else:
+                    fin = choice(dirs)
+                    if fin > direction0:
+                        dd['CMD_WHEEL'] = 'turn_right'
+                        time.sleep(1)
+                        dd['CMD_WHEEL'] = 'stop'
+                    if fin < direction0:
+                        dd['CMD_WHEEL'] = 'turn_left'
+                        time.sleep(1)
+                        dd['CMD_WHEEL'] = 'stop'
         except Exception as e:
             continue
         finally:
