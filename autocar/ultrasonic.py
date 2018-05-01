@@ -27,13 +27,12 @@ direction0=6 #正前方
 echo_pin = 13
 trig_pin=11
 
-alert_dist=0.3 #0.3米
-stop_dist=0.1 #0.1米
+alert_dist=0.4 #0.3米
+stop_dist=0.2 #0.1米
 
-#转向马达初始化:
+# 转向马达初始化:
 GPIO.setup(sg90_pin, GPIO.OUT, initial=False)
 p = GPIO.PWM(sg90_pin, 50)
-p.start(direction0)  #超声波对正前方
 
 #超声波初始化
 GPIO.setup(trig_pin, GPIO.OUT, initial=GPIO.LOW)
@@ -44,10 +43,10 @@ def rest():
     GPIO.cleanup()
 
 #转向到一个指定角度并开始测距，返回一个距离值
-def __distance(direction):
+def get_distance(direction):
     #先转向指定角度
     p.ChangeDutyCycle(direction)
-    time.sleep(0.02)
+    time.sleep(0.5)
 
     #开始测距
     GPIO.output(trig_pin, GPIO.HIGH)
@@ -68,31 +67,36 @@ def __distance(direction):
 
 #超声波子系统准备就绪，等待指令
 def standby(dd):
+    p.start(direction0)  # 超声波方向对正前方
+    time.sleep(0.5)
     while True:
         try:
-            d = __distance(direction0)
-            if d <= stop_dist:
+            dir,dist = get_distance(direction0)
+            if dist <= stop_dist:
                 dd['CMD_WHEEL'] = 'stop'
                 dirs = []
                 for direct in [direction1,direction2,direction3,direction4]:
-                    direction,distance = __distance(direct)
-                    if distance > alert_dist:
+                    dir,dist = get_distance(direct)
+                    if dist > alert_dist:
                         dirs.append(direct)
+                #如果四个角度都太近，则后退一段距离重新测试
                 if dirs.__len__() == 0:
                     dd['CMD_WHEEL'] = 'backaway'
                     time.sleep(1)
                     dd['CMD_WHEEL'] = 'stop'
                 else:
                     fin = choice(dirs)
+                    print(fin)
                     if fin > direction0:
-                        dd['CMD_WHEEL'] = 'turn_right'
-                        time.sleep(1)
-                        dd['CMD_WHEEL'] = 'stop'
-                    if fin < direction0:
                         dd['CMD_WHEEL'] = 'turn_left'
                         time.sleep(1)
                         dd['CMD_WHEEL'] = 'stop'
+                    if fin < direction0:
+                        dd['CMD_WHEEL'] = 'turn_right'
+                        time.sleep(1)
+                        dd['CMD_WHEEL'] = 'stop'
+
         except Exception as e:
             continue
         finally:
-            time.sleep(0.001)
+            time.sleep(0.2)
