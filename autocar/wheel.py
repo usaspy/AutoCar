@@ -18,6 +18,7 @@ in4 = 35
 enda = 40  # 左轮使能
 endb = 37  # 右轮使能，貌似只要左轮使能了两边都能转
 
+led = 36
 
 #打火，行走系统初始化
 def fire():
@@ -27,6 +28,7 @@ def fire():
     GPIO.setup(in4, GPIO.OUT, initial=GPIO.LOW)
     GPIO.setup(enda, GPIO.OUT, initial=GPIO.LOW)
     GPIO.setup(endb, GPIO.OUT, initial=GPIO.LOW)
+    GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
 
 #熄火
 def misfire():
@@ -72,26 +74,31 @@ def __right_stop():
 def forward():
     __left_forward()
     __right_forward()
+    GPIO.output(led,GPIO.HIGH)
 
 #后退
 def backaway():
     __left_backaway()
     __right_backaway()
+    GPIO.output(led,GPIO.HIGH)
 
 #左转
 def turn_left():
     __left_backaway()
     __right_forward()
+    GPIO.output(led,GPIO.HIGH)
 
 #右转
 def turn_right():
     __left_forward()
     __right_backaway()
+    GPIO.output(led,GPIO.HIGH)
 
 #停车
 def stop():
     __left_stop()
     __right_stop()
+    GPIO.output(led,GPIO.LOW)
 
 #行走子系统准备就绪，等待指令
 def standby(dd):
