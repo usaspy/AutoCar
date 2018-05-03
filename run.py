@@ -13,7 +13,7 @@ if __name__=="__main__":
     p1 = Process(target=wheel.standby,args=(dd,),name='wheel')  #行走系统
     p2 = Process(target=controller.webconsole,args=(dd,),name='controller') #用户操纵系统
     p3 = Process(target=ultrasonic.standby,args=(dd,),name='ultrasonic') #超声波测距系统
-    p4 = Process(target=camera.Camera,args=(dd,),name='Camera') #照相子系统
+    p4 = Process(target=camera.CameraVideo,args=(dd,),name='Camera') #照相子系统
 
     p1.daemon = True
     p2.daemon = True
