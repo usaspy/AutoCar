@@ -7,6 +7,7 @@ from autocar import controller
 from autocar import ultrasonic
 from autocar import camera
 from autocar import dd   #控制通道  进程间数据共享
+import affinity
 
 
 if __name__=="__main__":
@@ -23,6 +24,14 @@ if __name__=="__main__":
     p2.start()
     p3.start()
     p4.start()
+
+#针对四核
+    affinity.set_process_affinity_mask(p1.pid,7L)  #共用3CPU
+    affinity.set_process_affinity_mask(p2.pid,7L)
+    affinity.set_process_affinity_mask(p3.pid,7L)
+    affinity.set_process_affinity_mask(p4.pid,8L) #专用一路CPU
+    print(affinity.get_process_affinity_mask(p4.pid))
+
     p1.join()
     p2.join()
     p3.join()
