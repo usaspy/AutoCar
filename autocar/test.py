@@ -10,7 +10,7 @@ class VC(object):
 
     def get_frame(self):
         r,img = self.video.read()
-        ret,jpeg = cv2.imencode('.jpg',image)
+        ret,jpeg = cv2.imencode('.jpg',img)
         return jpeg.tobytes()
 
 app = Flask(__name__)
