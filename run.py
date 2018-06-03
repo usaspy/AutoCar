@@ -25,7 +25,7 @@ if __name__=="__main__":
     p3.start()
     p4.start()
 
-#针对四核
+#针对四核,将进程分配到指定的CPU上运行
     affinity.set_process_affinity_mask(p1.pid,7L)  #共用3CPU
     affinity.set_process_affinity_mask(p2.pid,7L)
     affinity.set_process_affinity_mask(p3.pid,7L)
